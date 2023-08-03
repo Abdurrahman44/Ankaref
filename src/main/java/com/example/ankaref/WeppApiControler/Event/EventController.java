@@ -5,24 +5,17 @@ import com.example.ankaref.Business.concret.MailService;
 import com.example.ankaref.DTO.Request.Event.CreatRequestE;
 import com.example.ankaref.DTO.Request.Event.UpdateRequestE;
 import com.example.ankaref.DTO.Response.Event.GetByIdEventResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController//annatation
 @RequestMapping("/api/Event")
 public class EventController {
-    private EventService eventService;
+    private final EventService eventService;
+    private final MailService emailService;
 
-    public EventController(EventService eventService) {
-
+    public EventController(EventService eventService, MailService emailService) {
         this.eventService = eventService;
-    }
-
-    private MailService emailService;
-
-    @Autowired
-    public EventController(MailService emailService) {
         this.emailService = emailService;
     }
 

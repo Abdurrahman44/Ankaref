@@ -8,7 +8,7 @@ import com.example.ankaref.DTO.Response.Event.GetByIdEventResponse;
 import java.util.List;
 
 public interface EventService {
-    public GetByIdEventResponse getId(int id);
+    GetByIdEventResponse getId(int id);
 
     List<GetAllEventsResponse> getAll();
 
@@ -17,7 +17,6 @@ public interface EventService {
     void updateRequest(UpdateRequestE updateRequestE);
 
     void deleteEvent(int id);
-
 
     void sendEventNotification(int eventId);
 }

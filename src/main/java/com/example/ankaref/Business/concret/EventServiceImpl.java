@@ -1,5 +1,6 @@
 package com.example.ankaref.Business.concret;
 
+import com.example.ankaref.Business.Abstracts.EventService;
 import com.example.ankaref.DTO.Request.Event.CreatRequestE;
 import com.example.ankaref.DTO.Request.Event.UpdateRequestE;
 import com.example.ankaref.DTO.Response.Event.GetAllEventsResponse;
@@ -7,30 +8,21 @@ import com.example.ankaref.DTO.Response.Event.GetByIdEventResponse;
 import com.example.ankaref.DataAccess.EventRepository;
 import com.example.ankaref.Entities.Event;
 import com.example.ankaref.Mapper.ModelMapperService;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
 @Service//eventen servisi
-public class EventServiceImpl implements com.example.ankaref.Business.Abstracts.EventService {
-    private EventRepository eventRepository;
-    private ModelMapperService modelMapperService;
-    private  MailService mailService;
+public class EventServiceImpl implements EventService {
+    private final EventRepository eventRepository;
+    private final ModelMapperService modelMapperService;
+    private  final MailService mailService;
 
-    //    @Autowired
-    public void EventServiceImpl() {
-
-    }
-
-    public void EventServiceImpl(EventRepository brandRepository,MailService mailService, ModelMapperService modelMapperService) {
-
+    public EventServiceImpl(EventRepository eventRepository, ModelMapperService modelMapperService, MailService mailService) {
         this.eventRepository = eventRepository;
-        this.mailService=mailService;
         this.modelMapperService = modelMapperService;
+        this.mailService = mailService;
     }
 
     @Override

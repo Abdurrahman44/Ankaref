@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class Login {
-    private String Email;
-    private Integer password;
+
+    private String email;
+    private String password;
 }

@@ -1,46 +1,45 @@
 package com.example.ankaref.Business.concret;
 
+import com.example.ankaref.Business.Abstracts.UsersService;
 import com.example.ankaref.DTO.Request.User.CreatRequest;
 import com.example.ankaref.DTO.Request.User.Login;
 import com.example.ankaref.DTO.Request.User.UpdateRequest;
-
 import com.example.ankaref.DTO.Response.User.GetAllKullanicilarResponse;
-import com.example.ankaref.DTO.Response.User.GetByIdKullanicilarResponse;
+import com.example.ankaref.DTO.Response.User.getByIdUsersResponse;
 import com.example.ankaref.DataAccess.UserRepository;
 import com.example.ankaref.Entities.Users;
 import com.example.ankaref.Mapper.ModelMapperService;
-
-import com.example.ankaref.Security.JwtTokenProvider;
-import lombok.Data;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service//Kullanici Service
-@Data
-public class UsersServiceImpl implements com.example.ankaref.Business.Abstracts.UsersService {
+public class UsersServiceImpl implements UsersService {
 
-    private UserRepository userRepository;
-    private ModelMapperService modelMapperService;
+    private final UserRepository userRepository;
+    private final ModelMapperService modelMapperService;
+
     @Autowired
     private AuthenticationManager authenticationManager;
-    @Autowired
 
-    private JwtTokenProvider jwtTokenProvider;
+
+//    private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void UserService(UserRepository userRepository) {
+    public UsersServiceImpl(UserRepository userRepository, ModelMapperService modelMapperService) {
         this.userRepository = userRepository;
+        this.modelMapperService = modelMapperService;
     }
+
 
     public List<GetAllKullanicilarResponse> getAll() {
         List<Users> Users = userRepository.findAll();
@@ -51,23 +50,12 @@ public class UsersServiceImpl implements com.example.ankaref.Business.Abstracts.
     }
 
     @Override
-    public GetByIdKullanicilarResponse getId(Long id) {
+    public getByIdUsersResponse getId(Long id) {
         Users users = userRepository.findById(id).orElseThrow();
 
-        GetByIdKullanicilarResponse response = this.modelMapperService.forResponse().map(users, GetByIdKullanicilarResponse.class);
+        getByIdUsersResponse response = this.modelMapperService.forResponse().map(users, getByIdUsersResponse.class);
         return response;
     }
-
-    public String login (@RequestBody CreatRequest loginRequest) {
-        UsernamePasswordAuthenticationToken authToken=new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
-        org.springframework.security.core.Authentication  auth =  authenticationManager.authenticate(authToken);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        String jwtToken=jwtTokenProvider.generateJwtToken(auth);
-
-        return "Bearer"+jwtToken;
-    }
-
-
 
 
     @Override
@@ -93,8 +81,8 @@ public class UsersServiceImpl implements com.example.ankaref.Business.Abstracts.
         UsernamePasswordAuthenticationToken authToken=new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
         org.springframework.security.core.Authentication  auth =  authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
-        String jwtToken=jwtTokenProvider.generateJwtToken(auth);
+        //String jwtToken=jwtTokenProvider.generateJwtToken(auth);
 
-        return "Bearer"+jwtToken;
+        return "Bearer";
     }
 }

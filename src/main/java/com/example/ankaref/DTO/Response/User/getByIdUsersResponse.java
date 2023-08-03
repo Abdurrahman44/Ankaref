@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetByIdKullanicilarResponse {
+public class getByIdUsersResponse {
 
     private long id;
 
