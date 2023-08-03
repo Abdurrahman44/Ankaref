@@ -3,7 +3,6 @@ package com.example.ankaref.Business.concret;
 import com.example.ankaref.DataAccess.UserRepository;
 import com.example.ankaref.Entities.Users;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -13,17 +12,21 @@ import java.util.List;
 @Service
 @Data
 public class MailService {
-    private final JavaMailSender mailSender;
-    private UserRepository kullanicilarRepository;
+    private JavaMailSender mailSender;
+    private UserRepository userRepository;
 
-    @Autowired
+    public MailService(){
+
+    }
+
+//    @Autowired
     public MailService(JavaMailSender mailSender, UserRepository userRepository) {
         this.mailSender = mailSender;
-        this.kullanicilarRepository = userRepository;
+        this.userRepository = userRepository;
     }
 
     public void sendEventNotification(String eventName, String eventDate) {
-        List<Users> recipients = kullanicilarRepository.findAll();
+        List<Users> recipients = userRepository.findAll();
         for (Users recipient : recipients) {
             sendEmail(recipient.getEmail(), eventName, eventDate);
         }

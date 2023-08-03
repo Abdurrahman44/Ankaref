@@ -3,6 +3,10 @@ package com.example.ankaref.Security.config;
 import com.example.ankaref.Security.JwtAuthenticationEntryPoint;
 import com.example.ankaref.Security.JwtAuthenticationFilter;
 import com.example.ankaref.Security.UserDetailsServiceImpl;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,28 +27,28 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
+@NoArgsConstructor
+@AllArgsConstructor
 public class SecurityConfig   {
+	@Autowired
 	private UserDetailsServiceImpl userDetailsImp;
+	@Autowired
 	private JwtAuthenticationEntryPoint handler;
-	public SecurityConfig(UserDetailsServiceImpl userDetailsImp, JwtAuthenticationEntryPoint handler) {
-		this.userDetailsImp = userDetailsImp;
-		this.handler = handler;
-	}
-	
 	@Bean
 	public JwtAuthenticationFilter jwtauthenticationFilter() {
 		return new JwtAuthenticationFilter();
 	}
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-		
+
 		return authenticationConfiguration.getAuthenticationManager();
-		
+
 	}@Bean
 	public PasswordEncoder passwordEncoder() {
 		
 		return new BCryptPasswordEncoder();
 	}
+	@Autowired
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
 		authenticationManagerBuilder
         .userDetailsService(userDetailsImp)
@@ -70,7 +74,7 @@ public class SecurityConfig   {
 		
 		return new CorsFilter(source);
 	}
-	
+	@Bean
 	public SecurityFilterChain  filterChain(HttpSecurity httpSecurity)throws Exception{
 		
 		 httpSecurity.authorizeHttpRequests().anyRequest().authenticated()

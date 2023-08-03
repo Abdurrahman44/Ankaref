@@ -16,16 +16,21 @@ import java.util.stream.Collectors;
 
 @Data
 @Service//eventen servisi
-public class EventService implements com.example.ankaref.Business.Abstracts.EventService {
+public class EventServiceImpl implements com.example.ankaref.Business.Abstracts.EventService {
     private EventRepository eventRepository;
     private ModelMapperService modelMapperService;
     private  MailService mailService;
 
-    @Autowired
-    public void EventService(EventRepository brandRepository,MailService mailService) {
+    //    @Autowired
+    public void EventServiceImpl() {
+
+    }
+
+    public void EventServiceImpl(EventRepository brandRepository,MailService mailService, ModelMapperService modelMapperService) {
 
         this.eventRepository = eventRepository;
         this.mailService=mailService;
+        this.modelMapperService = modelMapperService;
     }
 
     @Override

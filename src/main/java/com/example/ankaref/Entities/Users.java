@@ -27,7 +27,6 @@ public class Users {
     private String Email;
     @Column(name="Password")
     private String password;
-
     @ManyToMany
     @JoinTable(
             name = "user_event",
