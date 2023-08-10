@@ -29,7 +29,7 @@ public class AuthServiceImpl {
     public Users createuser(Users dto) {
 
         Role role = new Role();
-        role.setName("ADMIN");
+        //role.setName("ADMIN");
 
         Users user = new Users();
         user.setName(dto.getName());

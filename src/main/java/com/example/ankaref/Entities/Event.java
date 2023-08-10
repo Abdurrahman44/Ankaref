@@ -25,6 +25,6 @@ public class Event {
     @Column(name="Description")
     private String explain;
     @ManyToMany
-    Set<Users> Join;
+    Set<Users> JoinUser;
 
 }

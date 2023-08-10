@@ -1,5 +1,10 @@
 package com.example.ankaref;
 
+import com.example.ankaref.DataAccess.RoleRepository;
+;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +16,13 @@ import java.util.Properties;
 @SpringBootApplication
 public class AnkarefApplication {
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     public static void main(String[] args) {
         SpringApplication.run(AnkarefApplication.class, args);
     }
+
 
     @Bean
     public JavaMailSender getJavaMailSender() {
@@ -33,9 +42,10 @@ public class AnkarefApplication {
         return mailSender;
     }
 
-
-
-
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 
 
 }

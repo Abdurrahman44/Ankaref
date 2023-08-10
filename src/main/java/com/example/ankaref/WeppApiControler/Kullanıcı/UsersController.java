@@ -4,7 +4,7 @@ import com.example.ankaref.Business.Abstracts.UsersService;
 import com.example.ankaref.DTO.Request.User.CreatRequest;
 import com.example.ankaref.DTO.Request.User.Login;
 import com.example.ankaref.DTO.Request.User.UpdateRequest;
-import com.example.ankaref.DTO.Response.User.getByIdUsersResponse;
+import com.example.ankaref.DTO.Response.User.GetByIdUsersResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class UsersController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("{id}")
-    public getByIdUsersResponse getId(@PathVariable Long id) {
+    public GetByIdUsersResponse getId(@PathVariable Long id) {
         return usersService.getId(id);
     }
 

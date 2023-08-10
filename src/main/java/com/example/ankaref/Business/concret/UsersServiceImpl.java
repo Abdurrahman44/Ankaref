@@ -5,11 +5,15 @@ import com.example.ankaref.DTO.Request.User.CreatRequest;
 import com.example.ankaref.DTO.Request.User.Login;
 import com.example.ankaref.DTO.Request.User.UpdateRequest;
 import com.example.ankaref.DTO.Response.User.GetAllKullanicilarResponse;
-import com.example.ankaref.DTO.Response.User.getByIdUsersResponse;
+
+import com.example.ankaref.DTO.Response.User.GetByIdUsersResponse;
+import com.example.ankaref.DataAccess.RoleRepository;
 import com.example.ankaref.DataAccess.UserRepository;
+import com.example.ankaref.Entities.Role;
 import com.example.ankaref.Entities.Users;
-import com.example.ankaref.Mapper.ModelMapperService;
+
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,48 +31,74 @@ import java.util.stream.Collectors;
 public class UsersServiceImpl implements UsersService {
 
     private final UserRepository userRepository;
-    private final ModelMapperService modelMapperService;
+    // private final ModelMapperService modelMapperService;
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private ModelMapper mapper;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
 
-//    private JwtTokenProvider jwtTokenProvider;
+    //    private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UsersServiceImpl(UserRepository userRepository, ModelMapperService modelMapperService) {
+    public UsersServiceImpl(UserRepository userRepository, ModelMapper mapper) {
         this.userRepository = userRepository;
-        this.modelMapperService = modelMapperService;
+        this.mapper = mapper;
     }
 
-
+//getall id yapılacak ///
     public List<GetAllKullanicilarResponse> getAll() {
         List<Users> Users = userRepository.findAll();
-        List<GetAllKullanicilarResponse> UsersResponse = Users.stream()
-                .map(user -> this.modelMapperService
-                        .forResponse().map(user, GetAllKullanicilarResponse.class)).collect(Collectors.toList());
+        List<GetAllKullanicilarResponse> UsersResponse = Users.stream().map(user -> mapper.map(user, GetAllKullanicilarResponse.class)).collect(Collectors.toList());
+
+
         return UsersResponse;
     }
 
     @Override
-    public getByIdUsersResponse getId(Long id) {
+    public GetByIdUsersResponse getId(Long id) {
         Users users = userRepository.findById(id).orElseThrow();
+        // getByIdUsersResponse response = this.modelMapperService.forResponse().map(users, getByIdUsersResponse.class);
+        var dto = mapper.map(users, GetByIdUsersResponse.class);
 
-        getByIdUsersResponse response = this.modelMapperService.forResponse().map(users, getByIdUsersResponse.class);
-        return response;
+        return dto;
     }
 
 
-    @Override
+    @Override//buraya akılacak
     public void creatRequest(CreatRequest creatRequest) {
-        Users users = this.modelMapperService.forRequest().map(creatRequest, Users.class);
+        // Users users = this.modelMapperService.forRequest().map(creatRequest, Users.class);
+        Users users = mapper.map(creatRequest, Users.class);
+        Set<Role> roles = null;
+
+        for(Role r:creatRequest.getRoles()){
+            var rol=roleRepository.findById(r.getRoleId()).get();
+         roles.add(rol);   
+        }
+        
+        users.setRoles(roles);
+
+
+//        Role role = new Role();
+//        role.setRoleId(1);
+//        role.setRoleName("ADMIN");
+//        roles.add(role);
+////        Role role1 = new Role();
+//        role.setRoleId(2);
+//        role.setRoleName("USER");
+//        roles.add(role);
+//        users.setRoles(roles);
         this.userRepository.save(users);
     }
 
     @Override
     public void updateRequest(UpdateRequest updateRequest) {
-        Users users = this.modelMapperService.forRequest().map(updateRequest, Users.class);
+        // Users users = this.modelMapperService.forRequest().map(updateRequest, Users.class);
+        Users users = mapper.map(updateRequest, Users.class);
     }
 
 
@@ -78,8 +110,8 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public String login(Login login) {
-        UsernamePasswordAuthenticationToken authToken=new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
-        org.springframework.security.core.Authentication  auth =  authenticationManager.authenticate(authToken);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
+        org.springframework.security.core.Authentication auth = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
         //String jwtToken=jwtTokenProvider.generateJwtToken(auth);
 

@@ -1,8 +1,11 @@
 package com.example.ankaref.DTO.Request.User;
 
+import com.example.ankaref.Entities.Role;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,5 +18,6 @@ public class CreatRequest implements Serializable {//Gerekli olan Kullanıcılar
     private String lastName;
     private String Email;
     private Integer password;
+    private Set<Role> roles=new HashSet<>();
 
 }
