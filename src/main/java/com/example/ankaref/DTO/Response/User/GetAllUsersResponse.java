@@ -1,6 +1,5 @@
 package com.example.ankaref.DTO.Response.User;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetAllKullanicilarResponse {
+public class GetAllUsersResponse {
     private long id;
 
     private String name;
@@ -17,3 +16,5 @@ public class GetAllKullanicilarResponse {
     private String lastName;
     private String Email;
 }
+
+

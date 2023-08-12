@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.Set;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -14,15 +16,15 @@ import java.util.Set;
 @Table(name = "events")
 public class Event {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    @Column(name="ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private int id;
-    @Column(name="Event_Name")
-    private String  eventName;
+    @Column(name = "Event_Name")
+    private String eventName;
 
-    @Column(name="Date")
+    @Column(name = "Date")
     private String date;
-    @Column(name="Description")
+    @Column(name = "Description")
     private String explain;
     @ManyToMany
     Set<Users> JoinUser;

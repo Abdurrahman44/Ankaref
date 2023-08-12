@@ -5,6 +5,7 @@ import com.example.ankaref.DTO.Request.Event.UpdateRequestE;
 import com.example.ankaref.DTO.Response.Event.GetAllEventsResponse;
 import com.example.ankaref.DTO.Response.Event.GetByIdEventResponse;
 
+
 import java.util.List;
 
 public interface EventService {
@@ -19,4 +20,5 @@ public interface EventService {
     void deleteEvent(int id);
 
     void sendEventNotification(int eventId);
+
 }

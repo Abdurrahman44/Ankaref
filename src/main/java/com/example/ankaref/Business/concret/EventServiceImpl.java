@@ -11,6 +11,7 @@ import com.example.ankaref.Entities.Event;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final ModelMapper modelMapperService;
-    private  final MailService mailService;
+    private final MailService mailService;
 
     public EventServiceImpl(EventRepository eventRepository, ModelMapper modelMapperService, MailService mailService) {
         this.eventRepository = eventRepository;
@@ -43,6 +44,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public void creatRequest(CreatRequestE creatRequestE) {
         Event event = modelMapperService.map(creatRequestE, Event.class);
+
         this.eventRepository.save(event);
     }
 
@@ -56,6 +58,7 @@ public class EventServiceImpl implements EventService {
         this.eventRepository.deleteById(id);
 
     }
+
     public void sendEventNotification(int eventId) {
         Event event = eventRepository.findById(eventId).orElse(null);
         if (event != null) {
