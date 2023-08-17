@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(allowedHeaders = "*", originPatterns = "*")
@@ -16,7 +18,7 @@ public class RoleController {
         this.usersService = usersService;
     }
 
-    @GetMapping(value = "/roles")
+    @GetMapping(value = "/roless")
     public String test() {
         return "Tests";
     }
@@ -26,12 +28,5 @@ public class RoleController {
         usersService.creatRequest(dto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-//
-//    @PostMapping(value = "/save")
-//    @ResponseStatus(code = HttpStatus.CREATED)
-//    public void creatUser(@RequestBody Role creatRequest) {
-//        this.usersService.creatRequest(creatRequest);
-//    }
-
 
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,7 +19,7 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private int id;
+    private Long id;
     @Column(name = "Event_Name")
     private String eventName;
 
@@ -29,4 +30,7 @@ public class Event {
     @ManyToMany
     Set<Users> JoinUser;
 
+    public Set<Users> getParticipants() {
+        return JoinUser; // JoinUser seti etkinliğe katılan kullanıcıları içeriyor
+    }
 }

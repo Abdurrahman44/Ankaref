@@ -4,7 +4,6 @@ import com.example.ankaref.Entities.Role;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -12,12 +11,12 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreatRequest implements Serializable {//Gerekli olan Kullanıcıların özellikleri
+public class CreateRequest implements Serializable {//Gerekli olan Kullanıcıların özellikleri
 
     private String name;
     private String lastName;
     private String Email;
     private Integer password;
-    private Set<Role> roles=new HashSet<>();
+    private Set<Role> roles;
 
 }

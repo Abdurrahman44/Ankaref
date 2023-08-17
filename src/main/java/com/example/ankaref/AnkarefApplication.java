@@ -1,7 +1,7 @@
 package com.example.ankaref;
 
 import com.example.ankaref.DataAccess.RoleRepository;
-;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +20,7 @@ public class AnkarefApplication {
     private RoleRepository roleRepository;
 
     public static void main(String[] args) {
+
         SpringApplication.run(AnkarefApplication.class, args);
     }
 

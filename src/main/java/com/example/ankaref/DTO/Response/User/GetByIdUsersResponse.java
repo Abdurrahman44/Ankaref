@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetByIdUsersResponse {
 
-    private long id;
+    private Long id;
     private String name;
     private String lastName;
     private String Email;

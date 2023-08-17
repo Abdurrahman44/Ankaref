@@ -1,7 +1,7 @@
-package com.example.ankaref.WeppApiControler.Kullanıcı;
+package com.example.ankaref.WeppApiControler.Users;
 
 import com.example.ankaref.Business.Abstracts.UsersService;
-import com.example.ankaref.DTO.Request.User.CreatRequest;
+import com.example.ankaref.DTO.Request.User.CreateRequest;
 import com.example.ankaref.DTO.Request.User.Login;
 import com.example.ankaref.DTO.Request.User.UpdateRequest;
 import com.example.ankaref.DTO.Response.User.GetAllUsersResponse;
@@ -49,16 +49,20 @@ public class UsersController {
     @GetMapping(value = "/alluser")
     public List<GetAllUsersResponse> getAll() {
         List<Users> Users = userRepository.findAll();
-        List<GetAllUsersResponse> UsersResponse = Users.stream().map(user -> mapper.map(user, GetAllUsersResponse.class))
-                .collect(Collectors.toList());//collection bütün verileri listelemeyi sağlar
 
-        return UsersResponse;
+        return Users.stream().map(user -> mapper.map(user, GetAllUsersResponse.class))
+                .collect(Collectors.toList());
+
+     //   List<GetAllUsersResponse> UsersResponse = Users.stream().map(user -> mapper.map(user, GetAllUsersResponse.class))
+         //       .collect(Collectors.toList());//collection bütün verileri listelemeyi sağlar
+
+        //return UsersResponse;
     }
 
-    @PostMapping(value = "/creat")
+    @PostMapping(value = "/create")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void creatUser(@RequestBody CreatRequest creatRequest) {
-        this.usersService.creatRequest(creatRequest);
+    public void creatUser(@RequestBody CreateRequest createRequest) {
+        this.usersService.creatRequest(createRequest);
     }
 
     @PutMapping
@@ -68,8 +72,8 @@ public class UsersController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping
-    public void deleteUser(@PathVariable long id) {
+    @DeleteMapping()
+    public void deleteUser(@PathVariable Long id) {
         this.usersService.deleteUser(id);
     }
 

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetAllEventsResponse {
-    private long id;
+    private Long id;
     private String  eventName;
     private String date;
     private String explain;

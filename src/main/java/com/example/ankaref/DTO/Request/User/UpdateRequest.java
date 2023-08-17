@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UpdateRequest {
 
-     private long id;
+    private Long id;
     private String name;
 
     private String lastName;
@@ -19,7 +19,6 @@ public class UpdateRequest {
     private String Email;
 
     private Integer password;
-
 
 
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetByIdEventResponse {
-    private long id;
+    private Long id;
     private String  eventName;
     private String date;
     private String explain;

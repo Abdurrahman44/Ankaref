@@ -21,6 +21,8 @@ public class RolServiceImpl implements RolService {
         log.info("create rols");
     }
 
+
+
     @Override
     public List<Role> getAll() {
         return roleRepository.findAll();
