@@ -42,7 +42,7 @@ public class AuthServiceImpl {
         return newUser;
     }
 
-    public TokenResponse authenticate(Login dto) {
+   /* public TokenResponse authenticate(Login dto) {
         var user = repository.findByEmail(dto.getEmail()).orElseThrow();
 
         var token = tokenManager.generateToken(user);
@@ -51,5 +51,5 @@ public class AuthServiceImpl {
         log.info("Generate Token: " + dto.getEmail());
         return TokenResponse.builder().token(token).username(dto.getEmail()).name(user.getName()).surname(user.getLastName()).build();
     }
-
+*/
 }

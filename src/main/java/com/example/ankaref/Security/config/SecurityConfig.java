@@ -29,6 +29,8 @@ public class SecurityConfig {
         http
                 .csrf()
                 .disable()
+                .cors() // CORS ayarı ekleniyor
+                .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**")
                 .permitAll()
@@ -36,7 +38,7 @@ public class SecurityConfig {
                .permitAll()
                 .requestMatchers("/api/users/**")
                 .permitAll()
-                .requestMatchers("/api")
+                .requestMatchers("/api/event/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

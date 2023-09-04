@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController//annatation
 @RequestMapping("/api/event")
+@CrossOrigin(allowedHeaders = "*", originPatterns = "*")
 public class EventController {
     private final EventService eventService;
     private final MailService emailService;
@@ -45,23 +46,23 @@ public class EventController {
     }
 
 
-    @PostMapping()
+    @PostMapping(value = "/createEvent")
     @ResponseStatus(code = HttpStatus.CREATED)
     public void creatEvent(@RequestBody CreateRequestE createRequestE) {
         this.eventService.creatRequest(createRequestE);
 
     }
 
-    @PutMapping()
+    @PutMapping(value = "/updateEvent")
     public void updateEvent(@RequestBody UpdateRequestE updateRequestE) {
 
         this.eventService.updateRequest(updateRequestE);
 
     }
 
-   @PostMapping("/{eventId}/users/{userId}")
-    ResponseEntity<?> addUserEvent(@PathVariable Long eventId,@PathVariable Long userId ){
-        return this.eventService.addUserEvent(eventId, userId);
+   @PostMapping("/addUsers")
+    ResponseEntity<?> addUserEvents(@PathVariable Long eventId, @RequestBody List<Long> userIds){
+        return this.eventService.addUserEvents(eventId, userIds);
     }
 
     @DeleteMapping()

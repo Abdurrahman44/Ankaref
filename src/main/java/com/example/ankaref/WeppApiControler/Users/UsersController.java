@@ -3,6 +3,7 @@ package com.example.ankaref.WeppApiControler.Users;
 import com.example.ankaref.Business.Abstracts.UsersService;
 import com.example.ankaref.DTO.Request.User.CreateRequest;
 import com.example.ankaref.DTO.Request.User.Login;
+import com.example.ankaref.DTO.Request.User.TokenResponse;
 import com.example.ankaref.DTO.Request.User.UpdateRequest;
 import com.example.ankaref.DTO.Response.User.GetAllUsersResponse;
 import com.example.ankaref.DTO.Response.User.GetByIdUsersResponse;
@@ -24,18 +25,14 @@ public class UsersController {
     private final UserRepository userRepository;
     private ModelMapper mapper;
 
-    public UsersController(UsersService usersService, UserRepository userRepository) {
+    public UsersController(UsersService usersService, UserRepository userRepository,ModelMapper mapper) {
         this.usersService = usersService;
         this.userRepository = userRepository;
-    }
-
-    @GetMapping(value = "/test")
-    public String test() {
-        return "Tests";
+        this.mapper=mapper;
     }
 
     @PostMapping(value = "/login")
-    public String login(@RequestBody Login loginRequest) {
+    public TokenResponse login(@RequestBody Login loginRequest) {
         return usersService.login(loginRequest);
     }
 
@@ -52,11 +49,6 @@ public class UsersController {
 
         return Users.stream().map(user -> mapper.map(user, GetAllUsersResponse.class))
                 .collect(Collectors.toList());
-
-     //   List<GetAllUsersResponse> UsersResponse = Users.stream().map(user -> mapper.map(user, GetAllUsersResponse.class))
-         //       .collect(Collectors.toList());//collection bütün verileri listelemeyi sağlar
-
-        //return UsersResponse;
     }
 
     @PostMapping(value = "/create")
@@ -65,14 +57,14 @@ public class UsersController {
         this.usersService.creatRequest(createRequest);
     }
 
-    @PutMapping
+    @PutMapping(value = "/update")
     public void updateUser(@RequestBody UpdateRequest updateRequest) {
 
         this.usersService.updateRequest(updateRequest);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping()
+    @DeleteMapping(value = "/delete/{id}") //it is work
     public void deleteUser(@PathVariable Long id) {
         this.usersService.deleteUser(id);
     }

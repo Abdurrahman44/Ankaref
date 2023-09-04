@@ -14,8 +14,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,24 +52,27 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void creatRequest(CreateRequestE createRequestE) {
+    public void creatRequest(CreateRequestE createRequestE) {//it is work
         Event event = modelMapperService.map(createRequestE, Event.class);
+        LocalDate nowTime=LocalDate.now();
+
         if (event.getEventName() == null && event.getExplain() == null && event.getDate() == null) {
             throw new ArithmeticException("Anything is  null,Pleas check your event's blank");
+        } else if (event.getDate().isBefore(nowTime)) {
+            throw new ArithmeticException("event date will not be less than current time ");
         } else {
             this.eventRepository.save(event);
         }
     }
 
     @Override
-    public void updateRequest(UpdateRequestE updateRequestE) {
-
+    public void updateRequest(UpdateRequestE updateRequestE) {//it is work
         Event event = modelMapperService.map(updateRequestE, Event.class);
+        this.eventRepository.save(event);
     }
 
     @Override
-    public void deleteEvent(Long id) {
-
+    public void deleteEvent(Long id) {//silme işlemi gerçekleşiyor.
         if (userRepository.findById(id).isEmpty()) {
             throw new ArithmeticException("User did  not find");
         } else {
@@ -78,32 +83,38 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public ResponseEntity<?> addUserEvent(@PathVariable Long eventId, Long userId) {
+    public ResponseEntity<?> addUserEvents( Long eventId,List<Long> userIds) {/*test aşamasında*/
         Event event = eventRepository.findById(eventId).orElse(null);
-        Users users = userRepository.findById(userId).orElse(null);
-        if (event == null || users == null) {
+
+        if (event == null) {
             return ResponseEntity.notFound().build();
         }
+        List<Users> usersList = userRepository.findAllById(userIds);
 
-        event.getParticipants().add(users);
+        event.getParticipants().addAll(usersList);
         eventRepository.save(event);
         return ResponseEntity.ok().build();
-
-
     }
-@Override
+
+    @Override
 public List<Event> upcomingEvents(){
     List<Event> events = eventRepository.findAll();
     List<Event> closeEvent=new ArrayList<>() ;
-    Date nowTime = new Date();
-    long needTime=nowTime.getTime();
+    LocalDate nowTime = LocalDate.now();
 
     for (Event event:events) {
-        long need= Long.parseLong(event.getDate());
-        if(5 > need-needTime){
-            closeEvent.add(event);
+        if (event.getDate().getDayOfYear()- nowTime.getDayOfYear()<=4 && event.getDate().getDayOfYear()- nowTime.getDayOfYear()>=0  )
+            {
+                closeEvent.add(event);
+
+            }
+        else if (!(event.getDate().getDayOfYear()- nowTime.getDayOfYear()>=0))
+        {
+            var id=event.getId();
+            delete(id);
 
         }
+
     }
     return closeEvent;
 
@@ -111,6 +122,16 @@ public List<Event> upcomingEvents(){
 }
 
     public void sendEventNotification(Long eventId) {
-        eventRepository.findById(eventId).ifPresent(event -> mailService.sendEventNotification(event.getEventName(), event.getDate()));
+        eventRepository.findById(eventId).ifPresent(event -> mailService.sendEventNotification(event.getEventName(), String.valueOf(event.getDate())));
     }
+    public void delete(Long id) {//silme işlemi gerçekleşiyor.
+
+            this.eventRepository.deleteById(id);
+            upcomingEvents();
+
+    }
+
+
+
+
 }

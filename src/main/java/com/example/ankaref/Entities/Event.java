@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class Event {
     private String eventName;
 
     @Column(name = "Date")
-    private String date;
+    private LocalDate date;
     @Column(name = "Description")
     private String explain;
     @ManyToMany

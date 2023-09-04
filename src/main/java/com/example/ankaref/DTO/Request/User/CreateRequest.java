@@ -15,8 +15,8 @@ public class CreateRequest implements Serializable {//Gerekli olan Kullanıcıla
 
     private String name;
     private String lastName;
-    private String Email;
-    private Integer password;
-    private Set<Role> roles;
+
+    private String email;
+    private String password;
 
 }

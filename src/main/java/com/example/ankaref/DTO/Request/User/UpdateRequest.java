@@ -16,9 +16,9 @@ public class UpdateRequest {
 
     private String lastName;
 
-    private String Email;
+    private String email;
 
-    private Integer password;
+    private String password;
 
 
 }

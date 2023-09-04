@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateRequestE {
+    //private Long id;
     private String  eventName;
     private String date;
     private String explain;

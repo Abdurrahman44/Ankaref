@@ -33,13 +33,13 @@ public class Users implements UserDetails {
     @Column(name = "LastName")
     private String lastName;
 
-    @Column(name = "Email")
+    @Column(name = "Email" ,unique = true)
     private String email;
 
     @Column(name = "Password", length = 500)
     private String password;
 
-    @ManyToMany
+    @ManyToMany     
     @JoinTable(
             name = "user_event",
             joinColumns = @JoinColumn(name = "user_id"),

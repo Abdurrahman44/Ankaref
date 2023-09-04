@@ -21,9 +21,9 @@ public class AuthController {
     public ResponseEntity<Users> createUser(@RequestBody Users dto) {
         return new ResponseEntity<>(service.getAuthService().createuser(dto), HttpStatus.CREATED);
     }
-
+/*
     @PostMapping(value = "/auth/authenticate")
     public ResponseEntity<TokenResponse> authenticate(@RequestBody Login dto) {
         return new ResponseEntity<>(service.getAuthService().authenticate(dto), HttpStatus.OK);
-    }
+    }*/
 }

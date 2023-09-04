@@ -6,7 +6,8 @@ import com.example.ankaref.DTO.Response.Event.GetAllEventsResponse;
 import com.example.ankaref.DTO.Response.Event.GetByIdEventResponse;
 import com.example.ankaref.Entities.Event;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface EventService {
     void deleteEvent(Long id) ;
 
     void sendEventNotification(Long eventId);
-   ResponseEntity<?> addUserEvent(Long eventId, Long userId );
+    ResponseEntity<?> addUserEvents(Long eventId,  List<Long> userIds);
     List<Event> upcomingEvents();
 
 }

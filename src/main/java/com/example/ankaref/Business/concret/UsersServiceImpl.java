@@ -4,6 +4,7 @@ import com.example.ankaref.Business.Abstracts.RolService;
 import com.example.ankaref.Business.Abstracts.UsersService;
 import com.example.ankaref.DTO.Request.User.CreateRequest;
 import com.example.ankaref.DTO.Request.User.Login;
+import com.example.ankaref.DTO.Request.User.TokenResponse;
 import com.example.ankaref.DTO.Request.User.UpdateRequest;
 import com.example.ankaref.DTO.Response.User.GetAllUsersResponse;
 
@@ -13,23 +14,20 @@ import com.example.ankaref.DataAccess.UserRepository;
 import com.example.ankaref.Entities.Role;
 import com.example.ankaref.Entities.Users;
 
+import com.example.ankaref.Security.config.TokenManager;
 import jakarta.persistence.EntityExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -40,6 +38,7 @@ public class UsersServiceImpl implements UsersService {
     // private final ModelMapperService modelMapperService;
     private RoleRepository roleRepository;
     private RolService service;
+    private final TokenManager tokenManager;
 
     @Autowired
     private ModelMapper mapper;
@@ -50,11 +49,12 @@ public class UsersServiceImpl implements UsersService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UsersServiceImpl(UserRepository userRepository, RoleRepository roleRepository, ModelMapper mapper,RolService service) {
+    public UsersServiceImpl(UserRepository userRepository, RoleRepository roleRepository, ModelMapper mapper, RolService service, TokenManager tokenManager) {
         this.userRepository = userRepository;
         this.mapper = mapper;
-        this.service=service;
-        this.roleRepository=roleRepository;
+        this.service = service;
+        this.roleRepository = roleRepository;
+        this.tokenManager = tokenManager;
     }
 
 
@@ -76,51 +76,35 @@ public class UsersServiceImpl implements UsersService {
     }
 
 
-
     @Override//buraya akılacak
     public void creatRequest(CreateRequest createRequest) {
-        // Users users = this.modelMapperService.forRequest().map(creatRequest, Users.class);
         Users users = mapper.map(createRequest, Users.class);
-        Set<Role> roles = null;
-        String getEmail = users.getEmail();
-        String greenmail = String.valueOf(userRepository.findByEmail(getEmail));
-        if (Objects.equals(users.getEmail(), greenmail)) {
+        users.setPassword(passwordEncoder.encode(createRequest.getPassword()));
+        Set<Role> userRoles = new HashSet<>();
 
-            throw new ArithmeticException("Has been created users");
-
-        } else {
-
-
-            Set<Role> userRoles = new HashSet<>();
-
-
-
-            for (Role role : createRequest.getRoles()) {
-                Role existingRole = roleRepository.findByRoleName(role.getRoleName());
-                if (existingRole != null) {
-                    userRoles.add(existingRole);
-                }
-            }
-            users.setRoles(userRoles);
-            this.userRepository.save(users);
-
-
-        }
-
+        Role existingRole = roleRepository.findByRoleName("USER");
+        userRoles.add(existingRole);
+        users.setRoles(userRoles);
+        this.userRepository.save(users);
+        //     for (Role role : createRequest.getRoles()) {
+//         Role existingRole = roleRepository.findByRoleName("USER");
+//           if (existingRole != null) {
+//                userRoles.add(existingRole);
+//           }
+//        }
     }
 
 
-
     @Override
-    public void updateRequest(UpdateRequest updateRequest) {
-        // Users users = this.modelMapperService.forRequest().map(updateRequest, Users.class);
+    public void updateRequest(UpdateRequest updateRequest) {//kontrolü yapıldı
 
-        if (userRepository.findByEmail(updateRequest.getEmail()).isPresent()) {
-            Users users = mapper.map(updateRequest, Users.class);
-            System.out.println("Update successfully");
-        } else {
-            throw new ArithmeticException("User has been not  found in repository");
-        }
+        Users users = mapper.map(updateRequest, Users.class);
+
+
+        users.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
+
+        userRepository.save(users);
+
 
     }
 
@@ -135,12 +119,12 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public String login(Login login) {
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
-        org.springframework.security.core.Authentication auth = authenticationManager.authenticate(authToken);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        //String jwtToken=jwtTokenProvider.generateJwtToken(auth);
+    public TokenResponse login(Login login) {//iş kontrolü çalışıyor
+        var user = userRepository.findByEmail(login.getEmail()).orElseThrow();
+        var token = tokenManager.generateToken(user);
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
 
-        return "Bearer";
+        log.info("Generate Token: " + login.getEmail());
+        return TokenResponse.builder().token(token).username(login.getEmail()).name(user.getName()).surname(user.getLastName()).build();
     }
 }

@@ -4,6 +4,8 @@ import com.example.ankaref.Entities.Role;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Builder
 public class TokenResponse {
@@ -12,5 +14,5 @@ public class TokenResponse {
     private String surname;
     private String username;
     private String token;
-    private Role role;
+    //private Set<Role> role;
 }
