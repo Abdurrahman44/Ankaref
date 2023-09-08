@@ -69,7 +69,6 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public GetByIdUsersResponse getId(Long id) {//it is work
         Users users = userRepository.findById(id).orElseThrow(() -> new EntityExistsException("User not found"));
-        // getByIdUsersResponse response = this.modelMapperService.forResponse().map(users, getByIdUsersResponse.class);
         var dto = mapper.map(users, GetByIdUsersResponse.class);
 
         return dto;
