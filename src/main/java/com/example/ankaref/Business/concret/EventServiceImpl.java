@@ -2,6 +2,7 @@ package com.example.ankaref.Business.concret;
 
 import com.example.ankaref.Business.Abstracts.EventService;
 import com.example.ankaref.DTO.Request.Event.CreateRequestE;
+import com.example.ankaref.DTO.Request.Event.EventResponseDto;
 import com.example.ankaref.DTO.Request.Event.UpdateRequestE;
 import com.example.ankaref.DTO.Response.Event.GetAllEventsResponse;
 import com.example.ankaref.DTO.Response.Event.GetByIdEventResponse;
@@ -12,6 +13,7 @@ import com.example.ankaref.Entities.Event;
 import com.example.ankaref.Entities.Users;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,7 +56,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public void creatRequest(CreateRequestE createRequestE) {//it is work
         Event event = modelMapperService.map(createRequestE, Event.class);
-        LocalDate nowTime=LocalDate.now();
+        LocalDate nowTime = LocalDate.now();
 
         if (event.getEventName() == null && event.getExplain() == null && event.getDate() == null) {
             throw new ArithmeticException("Anything is  null,Pleas check your event's blank");
@@ -73,7 +75,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public void deleteEvent(Long id) {//silme işlemi gerçekleşiyor.
-        if (userRepository.findById(id).isEmpty()) {
+        if (eventRepository.findById(id).isEmpty()) {
             throw new ArithmeticException("User did  not find");
         } else {
             System.out.println("Successful delete");
@@ -83,55 +85,50 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public ResponseEntity<?> addUserEvents( Long eventId,List<Long> userIds) {/*test aşamasında*/
-        Event event = eventRepository.findById(eventId).orElse(null);
+    public void addUserEvents(EventResponseDto dto) throws Exception {/*it is work*/
+        Event event = eventRepository.findById(dto.getEventId()).orElse(null);
 
-        if (event == null) {
-            return ResponseEntity.notFound().build();
+        if (event != null) {
+            List<Users> usersList = userRepository.findAllById(dto.getUserIds());
+            event.getJoinUser().addAll(usersList);
+            eventRepository.save(event);
+        } else {
+            throw new Exception("Not Found");
         }
-        List<Users> usersList = userRepository.findAllById(userIds);
 
-        event.getParticipants().addAll(usersList);
-        eventRepository.save(event);
-        return ResponseEntity.ok().build();
+
     }
 
     @Override
-public List<Event> upcomingEvents(){
-    List<Event> events = eventRepository.findAll();
-    List<Event> closeEvent=new ArrayList<>() ;
-    LocalDate nowTime = LocalDate.now();
+    public List<Event> upcomingEvents() {//it is work
+        List<Event> events = eventRepository.findAll();
+        List<Event> closeEvent = new ArrayList<>();
+        LocalDate nowTime = LocalDate.now();
 
-    for (Event event:events) {
-        if (event.getDate().getDayOfYear()- nowTime.getDayOfYear()<=4 && event.getDate().getDayOfYear()- nowTime.getDayOfYear()>=0  )
-            {
+        for (Event event : events) {
+            if (event.getDate().getDayOfYear() - nowTime.getDayOfYear() <= 4 && event.getDate().getDayOfYear() - nowTime.getDayOfYear() >= 0) {
                 closeEvent.add(event);
 
+            } else if (!(event.getDate().getDayOfYear() - nowTime.getDayOfYear() >= 0)) {
+                var id = event.getId();
+                delete(id);
+
             }
-        else if (!(event.getDate().getDayOfYear()- nowTime.getDayOfYear()>=0))
-        {
-            var id=event.getId();
-            delete(id);
 
         }
-
+        return closeEvent;
     }
-    return closeEvent;
-
-
-}
 
     public void sendEventNotification(Long eventId) {
         eventRepository.findById(eventId).ifPresent(event -> mailService.sendEventNotification(event.getEventName(), String.valueOf(event.getDate())));
     }
+
     public void delete(Long id) {//silme işlemi gerçekleşiyor.
 
-            this.eventRepository.deleteById(id);
-            upcomingEvents();
+        this.eventRepository.deleteById(id);
+        upcomingEvents();
 
     }
-
-
 
 
 }

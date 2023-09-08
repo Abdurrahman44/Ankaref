@@ -58,7 +58,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
 
-    public List<GetAllUsersResponse> getAll() {//Bütün userları çekme
+    public List<GetAllUsersResponse> getAll() {//it is work
         List<Users> Users = userRepository.findAll();
         List<GetAllUsersResponse> UsersResponse = Users.stream().map(user -> mapper.map(user, GetAllUsersResponse.class)).collect(Collectors.toList());
 
@@ -67,7 +67,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public GetByIdUsersResponse getId(Long id) {
+    public GetByIdUsersResponse getId(Long id) {//it is work
         Users users = userRepository.findById(id).orElseThrow(() -> new EntityExistsException("User not found"));
         // getByIdUsersResponse response = this.modelMapperService.forResponse().map(users, getByIdUsersResponse.class);
         var dto = mapper.map(users, GetByIdUsersResponse.class);
@@ -76,7 +76,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
 
-    @Override//buraya akılacak
+    @Override//it is work
     public void creatRequest(CreateRequest createRequest) {
         Users users = mapper.map(createRequest, Users.class);
         users.setPassword(passwordEncoder.encode(createRequest.getPassword()));
@@ -96,7 +96,7 @@ public class UsersServiceImpl implements UsersService {
 
 
     @Override
-    public void updateRequest(UpdateRequest updateRequest) {//kontrolü yapıldı
+    public void updateRequest(UpdateRequest updateRequest) {//it is work
 
         Users users = mapper.map(updateRequest, Users.class);
 
@@ -109,7 +109,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void deleteUser(Long id) {//iş konturolü yapıldı.
+    public void deleteUser(Long id) {//it is work
         if (userRepository.findById(id).isEmpty()) {
             throw new ArithmeticException("Do not find the user");
         } else {
@@ -119,12 +119,12 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public TokenResponse login(Login login) {//iş kontrolü çalışıyor
+    public TokenResponse login(Login login) {//it is work
         var user = userRepository.findByEmail(login.getEmail()).orElseThrow();
         var token = tokenManager.generateToken(user);
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword()));
 
         log.info("Generate Token: " + login.getEmail());
-        return TokenResponse.builder().token(token).username(login.getEmail()).name(user.getName()).surname(user.getLastName()).build();
+        return TokenResponse.builder().token(token).username(login.getEmail()).name(user.getName()).surname(user.getLastName()).role(user.getRoles()).build();
     }
 }

@@ -6,5 +6,5 @@ import lombok.experimental.UtilityClass;
 public class AnkarefUtils {
 
     public static final String SECRET_KEY="404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970A4D5T6G3B9U8Q5RR6KL851G2A3C3B6M";
-    public static final int EXPIRE_TIME=1000 * 60 * 24;
+    public static final int EXPIRE_TIME=86400000;
 }

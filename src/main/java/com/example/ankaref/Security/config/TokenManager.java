@@ -1,5 +1,7 @@
 package com.example.ankaref.Security.config;
 
+import com.example.ankaref.Entities.Role;
+import com.example.ankaref.Entities.Users;
 import com.example.ankaref.utils.AnkarefUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,9 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.function.Function;
 
 @Service
@@ -27,17 +30,31 @@ public class TokenManager {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(Users user) {
+
+        String[] rolesOfStrings = new String[0];
+        if (!user.getRoles().isEmpty())
+            for (Role role : user.getRoles()) {
+                rolesOfStrings = List.of(role.getRoleName()).stream().toArray(String[]::new);
+            }
+
+        Claims claims = Jwts.claims().setSubject(user.getEmail());
+        claims.put("username", user.getEmail());
+        claims.put("firstName", user.getName());
+        claims.put("lastName", user.getLastName());
+        claims.put("roles", rolesOfStrings);
+        Date tokenCreateTime = new Date();
+        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(AnkarefUtils.EXPIRE_TIME));
+        return generateToken(claims, user, tokenValidity);
     }
 
-    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, Date tokenValidity) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + AnkarefUtils.EXPIRE_TIME))
+//                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(tokenValidity)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

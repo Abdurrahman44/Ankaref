@@ -11,6 +11,7 @@ import com.example.ankaref.DataAccess.UserRepository;
 import com.example.ankaref.Entities.Users;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,6 +64,7 @@ public class UsersController {
         this.usersService.updateRequest(updateRequest);
     }
 
+   // @Secured("ADMIN")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(value = "/delete/{id}") //it is work
     public void deleteUser(@PathVariable Long id) {

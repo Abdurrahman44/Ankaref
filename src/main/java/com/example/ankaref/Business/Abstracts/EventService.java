@@ -1,6 +1,7 @@
 package com.example.ankaref.Business.Abstracts;
 
 import com.example.ankaref.DTO.Request.Event.CreateRequestE;
+import com.example.ankaref.DTO.Request.Event.EventResponseDto;
 import com.example.ankaref.DTO.Request.Event.UpdateRequestE;
 import com.example.ankaref.DTO.Response.Event.GetAllEventsResponse;
 import com.example.ankaref.DTO.Response.Event.GetByIdEventResponse;
@@ -24,7 +25,7 @@ public interface EventService {
     void deleteEvent(Long id) ;
 
     void sendEventNotification(Long eventId);
-    ResponseEntity<?> addUserEvents(Long eventId,  List<Long> userIds);
+    void addUserEvents(EventResponseDto dto) throws Exception;
     List<Event> upcomingEvents();
 
 }

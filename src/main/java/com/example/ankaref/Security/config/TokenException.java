@@ -27,14 +27,18 @@ public class TokenException implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        final Map<String, Object> body = new HashMap<>();
-        body.put("message","JWT Expired.  Allowed clock skew: 0 milliseconds.");
-        body.put("error", authException.getMessage());
-        body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-        body.put("path", request.getServletPath());
+        if(response.getStatus()==HttpServletResponse.SC_UNAUTHORIZED){
+            final Map<String, Object> body = new HashMap<>();
+            body.put("message","JWT Expired.  Allowed clock skew: 0 milliseconds.");
+            body.put("error", authException.getMessage());
+            body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+            body.put("path", request.getServletPath());
 
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(response.getOutputStream(), body);
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(response.getOutputStream(), body);
+        }
+
+
     }
 
 }
